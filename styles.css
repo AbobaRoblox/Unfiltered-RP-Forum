@@ -1366,8 +1366,6 @@ body {
 }
 
 .social-btn.discord { background: var(--discord); }
-.social-btn.vk { background: #4a76a8; }
-.social-btn.youtube { background: #ff0000; }
 .social-btn:hover { transform: translateY(-3px); }
 
 .footer-links h4 { font-size: 14px; font-weight: 600; margin-bottom: 20px; }
