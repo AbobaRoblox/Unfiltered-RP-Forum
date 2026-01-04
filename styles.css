@@ -4175,10 +4175,24 @@ body {
 
 .btn-danger {
     background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
 }
 
 .btn-danger:hover {
     background: linear-gradient(135deg, #dc2626, #b91c1c);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, #eab308, #ca8a04);
+    color: white;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #ca8a04, #a16207);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(234, 179, 8, 0.4);
 }
 
 .btn-sm {

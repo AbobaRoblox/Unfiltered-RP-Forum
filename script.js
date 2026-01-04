@@ -172,7 +172,76 @@ const ROLES_INFO = {
 const api = {
     token: localStorage.getItem('urp_token'),
     
+    // Настройки API (можно изменить через localStorage)
+    get useRealServer() {
+        // По умолчанию false (локальный режим), можно включить через localStorage
+        return localStorage.getItem('useRealServer') === 'true';
+    },
+    
+    get apiBaseUrl() {
+        // Можно настроить через localStorage, по умолчанию текущий домен
+        return localStorage.getItem('apiBaseUrl') || window.location.origin;
+    },
+    
     async request(endpoint, options = {}) {
+        // Если включен реальный сервер, используем HTTP запросы
+        if (this.useRealServer) {
+            return this.realServerRequest(endpoint, options);
+        }
+        
+        // Иначе используем локальный режим (старая логика)
+        return this.localRequest(endpoint, options);
+    },
+    
+    // Реальные HTTP запросы к серверу
+    async realServerRequest(endpoint, options = {}) {
+        const method = options.method || 'GET';
+        const url = `${this.apiBaseUrl}${endpoint}`;
+        
+        try {
+            const fetchOptions = {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include'
+            };
+            
+            // Добавляем токен авторизации, если есть
+            if (this.token) {
+                fetchOptions.headers['Authorization'] = `Bearer ${this.token}`;
+            }
+            
+            // Добавляем тело запроса
+            if (options.body) {
+                fetchOptions.body = options.body;
+            }
+            
+            const response = await fetch(url, fetchOptions);
+            
+            // Проверяем статус ответа
+            if (!response.ok) {
+                let errorMessage = `HTTP ${response.status}`;
+                try {
+                    const errorData = await response.json();
+                    errorMessage = errorData.error || errorData.message || errorMessage;
+                } catch (e) {
+                    // Если ответ не JSON, используем статус
+                }
+                throw new Error(errorMessage);
+            }
+            
+            // Парсим JSON ответ
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('API Request Error:', error);
+            throw error;
+        }
+    },
+    
+    // Локальный режим (старая логика для обратной совместимости)
+    async localRequest(endpoint, options = {}) {
         // Simulate async operation
         await new Promise(resolve => setTimeout(resolve, 0));
         
@@ -674,6 +743,10 @@ const api = {
     handleCreatePost(data) {
         const userId = this.getUserId();
         if (!userId) throw new Error('Unauthorized');
+        const user = DB.get('users', userId);
+        if (user && user.is_muted) {
+            throw new Error(`Вы замьючены. Причина: ${user.mute_reason || 'Нарушение правил'}`);
+        }
         const category = categoryMap[data.category] || data.category;
         const now = new Date().toISOString();
         
@@ -725,8 +798,12 @@ const api = {
         if (!post) throw new Error('Post not found');
         if (post.author_id !== userId) {
             const user = DB.get('users', userId);
-            if (!user || (user.role !== 'admin' && user.role !== 'moderator' && user.role !== 'management')) {
-                throw new Error('Unauthorized');
+            if (!user) throw new Error('Unauthorized');
+            const userLevel = ROLES_INFO[user.role]?.level || 0;
+            // Могут удалять: админ (3), модератор (2), ст.админ (3.5), менеджер (4), руководство (5)
+            // Хелпер (1) не может
+            if (userLevel < 2) {
+                throw new Error('Ранг не доступен. Удалять темы могут только модераторы и выше.');
             }
         }
         DB.delete('posts', postId);
@@ -745,6 +822,10 @@ const api = {
     handleCreateComment(postId, { text }) {
         const userId = this.getUserId();
         if (!userId) throw new Error('Unauthorized');
+        const user = DB.get('users', userId);
+        if (user && user.is_muted) {
+            throw new Error(`Вы замьючены. Причина: ${user.mute_reason || 'Нарушение правил'}`);
+        }
         const now = new Date().toISOString();
         const comment = DB.insert('comments', {
             post_id: postId,
@@ -843,6 +924,10 @@ const api = {
     handleSendMessage({ receiverId, content }) {
         const senderId = this.getUserId();
         if (!senderId) throw new Error('Unauthorized');
+        const user = DB.get('users', senderId);
+        if (user && user.is_muted) {
+            throw new Error(`Вы замьючены. Причина: ${user.mute_reason || 'Нарушение правил'}`);
+        }
         const now = new Date().toISOString();
         const message = DB.insert('messages', {
             sender_id: senderId,
@@ -1106,6 +1191,9 @@ const api = {
         const targetUser = DB.get('users', userId);
         
         if (!currentUser || !targetUser) throw new Error('User not found');
+        if (!reason || !reason.trim()) {
+            throw new Error('Необходимо указать причину мута');
+        }
         const targetUserLevel = ROLES_INFO[targetUser.role]?.level || 0;
         if (targetUserLevel >= 5) {
             throw new Error('Нельзя замутить руководство');
@@ -1119,14 +1207,14 @@ const api = {
         
         DB.update('users', userId, { 
             is_muted: true, 
-            mute_reason: reason || 'Нарушение правил',
+            mute_reason: reason.trim(),
             mute_expires_at: muteExpiresAt
         });
         
         DB.insert('activity_log', {
             user_id: currentUserId,
             action: 'mute_user',
-            details: `Замучен пользователь ${targetUser.username}: ${reason || 'Нарушение правил'}${duration ? ` на ${duration} минут` : ''}`
+            details: `Замучен пользователь ${targetUser.username}: ${reason}${duration ? ` на ${duration} минут` : ''}`
         });
         return { success: true };
     },
@@ -2746,6 +2834,11 @@ async function loadAdminUsers() {
                     banUser(userId, username);
                 } else if (action === 'unban') {
                     unbanUser(userId);
+                } else if (action === 'mute') {
+                    const username = actionBtn.getAttribute('data-username');
+                    muteUser(userId, username);
+                } else if (action === 'unmute') {
+                    unmuteUser(userId);
                 }
                 return false;
             }
@@ -3075,7 +3168,12 @@ function closeMuteModal() {
 async function confirmMute() {
     if (!muteTargetUserId) return;
     
-    const reason = document.getElementById('muteReasonInput').value.trim() || 'Нарушение правил';
+    const reason = document.getElementById('muteReasonInput').value.trim();
+    if (!reason) {
+        showToast('error', 'Ошибка', 'Необходимо указать причину мута');
+        return;
+    }
+    
     const durationInput = document.getElementById('muteDurationInput').value.trim();
     const duration = durationInput ? parseInt(durationInput) : null;
     
@@ -3095,15 +3193,15 @@ async function confirmMute() {
 }
 
 async function unmuteUser(userId) {
-    if (!confirm('Снять мут с этого пользователя?')) return;
-    
-    try {
-        await api.post(`/admin/users/${userId}/unmute`);
-        showToast('success', 'Мут снят', 'Мут успешно снят');
-        loadAdminUsers();
-    } catch (error) {
-        showToast('error', 'Ошибка', error.message);
-    }
+    showConfirm('Снять мут', 'Снять мут с этого пользователя?', async () => {
+        try {
+            await api.post(`/admin/users/${userId}/unmute`);
+            showToast('success', 'Мут снят', 'Мут успешно снят');
+            loadAdminUsers();
+        } catch (error) {
+            showToast('error', 'Ошибка', error.message);
+        }
+    });
 }
 
 async function deleteUserAdmin(userId, username) {
@@ -3482,11 +3580,13 @@ function rejectApplication(appId) {
     const modal = document.getElementById('rejectReasonModal');
     const title = modal.querySelector('h3');
     if (title) title.innerHTML = '<i class="fas fa-times-circle"></i> Отклонить заявку';
-    modal.classList.remove('hidden');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
 }
 
 function closeRejectModal() {
-    document.getElementById('rejectReasonModal').classList.add('hidden');
+    document.getElementById('rejectReasonModal').classList.remove('active');
+    document.body.style.overflow = '';
     rejectTargetAppId = null;
     rejectTargetVerId = null;
 }
@@ -3627,7 +3727,8 @@ function rejectVerification(verId) {
     const modal = document.getElementById('rejectReasonModal');
     const title = modal.querySelector('h3');
     if (title) title.innerHTML = '<i class="fas fa-times-circle"></i> Отклонить верификацию';
-    modal.classList.remove('hidden');
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
 }
 
 async function demoteStaff(userId, username, currentRole) {
@@ -3747,8 +3848,8 @@ async function openProfile(userId = null) {
         if (actionsEl) {
             if (currentUser && currentUser.id === profileUserId) {
         actionsEl.innerHTML = `
-            <button class="btn btn-glass" onclick="openSettings()">
-                <i class="fas fa-cog"></i> Настройки
+            <button class="btn btn-glass" onclick="openProfileSettings()">
+                <i class="fas fa-cog"></i> Настройки профиля
             </button>
         `;
             } else if (currentUser) {
@@ -3811,12 +3912,12 @@ async function openMyPosts() {
     }
 }
 
-// ===== SETTINGS =====
-function openSettings() {
+// ===== PROFILE SETTINGS =====
+function openProfileSettings() {
     closeUserMenu();
     if (!currentUser) return;
     
-    document.getElementById('settingsModal').classList.add('active');
+    document.getElementById('profileSettingsModal').classList.add('active');
     document.body.style.overflow = 'hidden';
     
     document.getElementById('settingsUsername').value = currentUser.username || '';
@@ -3846,14 +3947,96 @@ function openSettings() {
     `;
 }
 
-function closeSettingsModal() {
-    document.getElementById('settingsModal').classList.remove('active');
+function closeProfileSettingsModal() {
+    document.getElementById('profileSettingsModal').classList.remove('active');
     document.body.style.overflow = '';
+}
+
+// ===== SITE SETTINGS =====
+function openSettings() {
+    closeUserMenu();
+    
+    document.getElementById('siteSettingsModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Загружаем сохраненные настройки
+    const language = localStorage.getItem('siteLanguage') || 'ru';
+    const theme = localStorage.getItem('siteTheme') || 'dark';
+    const notificationsEnabled = localStorage.getItem('notificationsEnabled') !== 'false';
+    const emailNotifications = localStorage.getItem('emailNotifications') === 'true';
+    const cookiesAccepted = localStorage.getItem('cookiesAccepted') !== 'false';
+    
+    document.getElementById('siteLanguage').value = language;
+    document.getElementById('siteTheme').value = theme;
+    document.getElementById('notificationsEnabled').checked = notificationsEnabled;
+    document.getElementById('emailNotifications').checked = emailNotifications;
+    document.getElementById('cookiesAccepted').checked = cookiesAccepted;
+}
+
+function closeSiteSettingsModal() {
+    document.getElementById('siteSettingsModal').classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+async function saveSiteSettings(event) {
+    event.preventDefault();
+    
+    const language = document.getElementById('siteLanguage').value;
+    const theme = document.getElementById('siteTheme').value;
+    const notificationsEnabled = document.getElementById('notificationsEnabled').checked;
+    const emailNotifications = document.getElementById('emailNotifications').checked;
+    const cookiesAccepted = document.getElementById('cookiesAccepted').checked;
+    
+    localStorage.setItem('siteLanguage', language);
+    localStorage.setItem('siteTheme', theme);
+    localStorage.setItem('notificationsEnabled', notificationsEnabled);
+    localStorage.setItem('emailNotifications', emailNotifications);
+    localStorage.setItem('cookiesAccepted', cookiesAccepted);
+    
+    // Применяем изменения
+    changeLanguage(language);
+    applyTheme(theme);
+    
+    closeSiteSettingsModal();
+    showToast('success', 'Сохранено', 'Настройки сайта успешно обновлены');
+}
+
+function changeLanguage(lang) {
+    localStorage.setItem('siteLanguage', lang);
+    // Здесь можно добавить логику переключения языка
+    // Пока что просто сохраняем выбор
+    if (lang === 'en') {
+        document.documentElement.lang = 'en';
+    } else {
+        document.documentElement.lang = 'ru';
+    }
+}
+
+function applyTheme(theme) {
+    if (theme === 'light') {
+        document.body.classList.add('light-theme');
+    } else {
+        document.body.classList.remove('light-theme');
+    }
+}
+
+function clearCookies() {
+    showConfirm('Очистка cookies', 'Вы уверены, что хотите очистить все cookies? Это может потребовать повторной авторизации.', () => {
+        // Очищаем только настройки сайта, не трогая токены авторизации
+        localStorage.removeItem('siteLanguage');
+        localStorage.removeItem('siteTheme');
+        localStorage.removeItem('notificationsEnabled');
+        localStorage.removeItem('emailNotifications');
+        localStorage.removeItem('cookiesAccepted');
+        
+        document.getElementById('cookiesAccepted').checked = false;
+        showToast('success', 'Очищено', 'Cookies успешно очищены');
+    });
 }
 
 // ===== DELETE ACCOUNT =====
 function openDeleteAccountModal() {
-    closeSettingsModal();
+    closeProfileSettingsModal();
     document.getElementById('deleteAccountModal').classList.add('active');
     document.body.style.overflow = 'hidden';
     document.getElementById('deleteAccountPassword').value = '';
@@ -3970,7 +4153,7 @@ async function saveSettings(e) {
         localStorage.setItem('urp_user', JSON.stringify(currentUser));
     
     updateAuthUI();
-    closeSettingsModal();
+    closeProfileSettingsModal();
     showToast('success', 'Сохранено', 'Настройки успешно обновлены');
     
     document.getElementById('settingsCurrentPassword').value = '';
@@ -4178,7 +4361,7 @@ async function renderPosts() {
                         </div>
                         <h3 class="post-title">${escapeHtml(post.title)}</h3>
                         <div class="post-meta">
-                            <span><i class="fas fa-user"></i> ${escapeHtml(post.author)}</span>
+                            <span><i class="fas fa-user"></i> ${escapeHtml(post.author?.username || post.author || 'Unknown')}</span>
                             <span><i class="fas fa-clock"></i> ${timeAgo}</span>
                         </div>
                     </div>
@@ -4295,8 +4478,8 @@ async function viewPost(postId) {
             <h1 class="post-full-title">${escapeHtml(post.title)}</h1>
             <div class="post-full-meta">
                     <span onclick="openProfile('${post.author_id}')" style="cursor:pointer;">
-                        <i class="fas fa-user"></i> ${escapeHtml(post.author)}
-                        ${post.authorRoleInfo && post.authorRoleInfo.level > 0 ? `<span style="color:${post.authorRoleInfo.color}">[${post.authorRoleInfo.name}]</span>` : ''}
+                        <i class="fas fa-user"></i> ${escapeHtml(post.author?.username || post.author || 'Unknown')}
+                        ${post.author?.roleInfo && post.author.roleInfo.level > 0 ? `<span style="color:${post.author.roleInfo.color}">[${post.author.roleInfo.name}]</span>` : ''}
                     </span>
                 <span><i class="fas fa-clock"></i> ${timeAgo}</span>
                 <span><i class="fas fa-eye"></i> ${post.views} просмотров</span>
@@ -4366,11 +4549,13 @@ let rejectTargetPostId = null;
 function rejectPost(postId) {
     rejectTargetPostId = postId;
     document.getElementById('rejectPostReasonInput').value = '';
-    document.getElementById('rejectPostReasonModal').classList.remove('hidden');
+    document.getElementById('rejectPostReasonModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
 }
 
 function closeRejectPostModal() {
-    document.getElementById('rejectPostReasonModal').classList.add('hidden');
+    document.getElementById('rejectPostReasonModal').classList.remove('active');
+    document.body.style.overflow = '';
     rejectTargetPostId = null;
 }
 
@@ -4446,13 +4631,13 @@ function renderComments(postId, comments) {
             ` : comments.map(comment => `
                 <div class="comment ${comment.is_admin_action ? 'comment-admin' : ''}">
                     <div class="comment-avatar">
-                        ${comment.avatar_url ? `<img src="${comment.avatar_url}" alt="">` : comment.avatar}
+                        ${comment.author?.avatar_url ? `<img src="${comment.author.avatar_url}" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;">` : (comment.author?.avatar ? comment.author.avatar : '🎮')}
                     </div>
                     <div class="comment-content">
                         <div class="comment-header">
-                            <span class="comment-author" style="color: ${comment.authorRoleInfo?.color || 'inherit'}" 
+                            <span class="comment-author" style="color: ${comment.author?.roleInfo?.color || 'inherit'}" 
                                   onclick="openProfile('${comment.author_id}')" style="cursor:pointer;">
-                                ${comment.authorRoleInfo && comment.authorRoleInfo.level > 0 ? `<i class="fas ${comment.authorRoleInfo.icon}"></i> ` : ''}${escapeHtml(comment.author)}
+                                ${comment.author?.roleInfo && comment.author.roleInfo.level > 0 ? `<i class="fas ${comment.author.roleInfo.icon}"></i> ` : ''}${escapeHtml(comment.author?.username || comment.author || 'Unknown')}
                             </span>
                             <span class="comment-date">${getTimeAgo(comment.created_at)}</span>
                         </div>
@@ -4546,7 +4731,7 @@ async function openFavorites() {
                         <div class="profile-post-title">${escapeHtml(post.title)}</div>
                         <div class="profile-post-meta">
                             <span class="badge-category">${categoryNames[post.category]}</span> • 
-                            ${post.author} • ${getTimeAgo(post.created_at)}
+                            ${escapeHtml(post.author?.username || post.author || 'Unknown')} • ${getTimeAgo(post.created_at)}
                         </div>
                     </div>
                     <span class="status-badge status-${post.status}">${post.status_text}</span>
@@ -6368,7 +6553,12 @@ window.toggleUserMenu = toggleUserMenu;
 window.openProfile = openProfile;
 window.openMyPosts = openMyPosts;
 window.openSettings = openSettings;
-window.closeSettingsModal = closeSettingsModal;
+window.openProfileSettings = openProfileSettings;
+window.closeProfileSettingsModal = closeProfileSettingsModal;
+window.closeSiteSettingsModal = closeSiteSettingsModal;
+window.saveSiteSettings = saveSiteSettings;
+window.changeLanguage = changeLanguage;
+window.clearCookies = clearCookies;
 window.selectAvatar = selectAvatar;
 window.uploadAvatar = uploadAvatar;
 window.saveSettings = saveSettings;
