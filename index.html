@@ -4,9 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unfiltered RP | Официальный Форум</title>
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://unfilteredrp-forum.ru/">
+    <meta property="og:title" content="Unfiltered RP | Официальный Форум">
+    <meta property="og:description" content="Добро пожаловать на официальный форум Unfiltered RP. Подавайте жалобы, апелляции, задавайте вопросы и общайтесь с сообществом.">
+    <meta property="og:image" content="https://unfilteredrp-forum.ru/og-image.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://unfilteredrp-forum.ru/">
+    <meta property="twitter:title" content="Unfiltered RP | Официальный Форум">
+    <meta property="twitter:description" content="Добро пожаловать на официальный форум Unfiltered RP. Подавайте жалобы, апелляции, задавайте вопросы и общайтесь с сообществом.">
+    <meta property="twitter:image" content="https://unfilteredrp-forum.ru/og-image.jpg">
+    <link rel="icon" type="image/png" sizes="16x16" href="icons/icons8-roblox-16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/icons8-roblox-32.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="icons/icons8-roblox-64.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icons8-roblox-180.png">
+    <link rel="shortcut icon" href="icons/icons8-roblox-32.png">
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
 <body>
     <!-- Animated Background -->
@@ -24,7 +44,7 @@
         <div class="nav-container">
             <a href="#" class="logo" onclick="goHome(); return false;">
                 <div class="logo-icon">
-                    <i class="fas fa-gamepad"></i>
+                    <img src="icons/icons8-roblox-50.png" alt="Roblox" class="roblox-logo-img">
                 </div>
                 <span class="logo-text">UNFILTERED RP</span>
             </a>
@@ -76,9 +96,28 @@
                             <a href="#" onclick="openMyPosts(); return false;">
                                 <i class="fas fa-file-alt"></i> Мои темы
                             </a>
+                            <a href="#" onclick="openMessages(); return false;">
+                                <i class="fas fa-envelope"></i> Сообщения
+                            </a>
+                            <a href="#" onclick="openNotifications(); return false;">
+                                <i class="fas fa-bell"></i> Уведомления
+                            </a>
+                            <a href="#" onclick="openFavorites(); return false;">
+                                <i class="fas fa-bookmark"></i> Избранное
+                            </a>
                             <a href="#" onclick="openSettings(); return false;">
                                 <i class="fas fa-cog"></i> Настройки
                             </a>
+                            <hr>
+                            <a href="#" onclick="openAccountSwitcher(); return false;">
+                                <i class="fas fa-exchange-alt"></i> Сменить аккаунт
+                            </a>
+                            <div id="adminMenuItems" class="hidden">
+                                <hr>
+                                <a href="#" onclick="openAdminPanel(); return false;" class="admin-link">
+                                    <i class="fas fa-shield-alt"></i> Админ-панель
+                                </a>
+                            </div>
                             <hr>
                             <a href="#" onclick="logout(); return false;" class="logout-link">
                                 <i class="fas fa-sign-out-alt"></i> Выйти
@@ -154,7 +193,7 @@
                         <span class="profile-badge user"><i class="fas fa-user"></i> Пользователь</span>
                     </div>
                     <div class="profile-meta">
-                        <span><i class="fas fa-gamepad"></i> <span id="profileRoblox">RobloxNick</span></span>
+                        <span><img src="icons/icons8-roblox-50.png" alt="Roblox" class="roblox-icon" width="16" height="16" style="display: inline-block; vertical-align: middle; margin-right: 4px;"> <span id="profileRoblox">RobloxNick</span></span>
                         <span><i class="fas fa-calendar"></i> Зарегистрирован: <span id="profileDate">01.01.2024</span></span>
                     </div>
                 </div>
@@ -342,7 +381,7 @@
                 <div class="footer-brand">
                     <a href="#" class="logo" onclick="goHome(); return false;">
                         <div class="logo-icon">
-                            <i class="fas fa-gamepad"></i>
+                            <img src="icons/icons8-roblox-50.png" alt="Roblox" class="roblox-logo-img">
                         </div>
                         <span class="logo-text">UNFILTERED RP</span>
                     </a>
@@ -352,6 +391,9 @@
                     <div class="social-links">
                         <a href="https://discord.gg/TcY67aZQTa" target="_blank" class="social-btn discord">
                             <i class="fab fa-discord"></i>
+                        </a>
+                        <a href="https://www.youtube.com/@UnfilteredRP" target="_blank" class="social-btn youtube">
+                            <i class="fab fa-youtube"></i>
                         </a>
                     </div>
                 </div>
@@ -368,7 +410,8 @@
                     <h4>Сообщество</h4>
                     <ul>
                         <li><a href="https://discord.gg/TcY67aZQTa" target="_blank"><i class="fab fa-discord"></i> Discord</a></li>
-                        <li><a href="#"><i class="fas fa-gamepad"></i> Roblox</a></li>
+                        <li><a href="https://www.youtube.com/@UnfilteredRP" target="_blank"><i class="fab fa-youtube"></i> YouTube</a></li>
+                        <li><a href="#"><img src="icons/icons8-roblox-50.png" alt="Roblox" class="roblox-icon" width="16" height="16" style="display: inline-block; vertical-align: middle; margin-right: 4px;"> Roblox</a></li>
                     </ul>
                 </div>
                 <div class="footer-links">
@@ -417,7 +460,7 @@
             <div class="auth-form" id="loginForm">
                 <div class="auth-header">
                     <div class="auth-logo">
-                        <i class="fas fa-gamepad"></i>
+                        <img src="icons/icons8-roblox-100.png" alt="Roblox" class="roblox-logo-img">
                     </div>
                     <h2>Вход в аккаунт</h2>
                     <p>Добро пожаловать в Unfiltered RP!</p>
@@ -465,8 +508,12 @@
                         <input type="text" id="regUsername" placeholder="Придумайте ник (3-20 символов)" required minlength="3" maxlength="20">
                     </div>
                     <div class="form-group">
-                        <label><i class="fas fa-gamepad"></i> Ник в Roblox *</label>
+                        <label><img src="icons/icons8-roblox-50.png" alt="Roblox" class="roblox-icon" width="16" height="16" style="display: inline-block; vertical-align: middle; margin-right: 4px;"> Ник в Roblox *</label>
                         <input type="text" id="regRoblox" placeholder="Ваш ник в игре" required>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-map-marker-alt"></i> Род *</label>
+                        <input type="text" id="regRod" placeholder="Ваш род (например: Москва, СПБ и т.д.)" required>
                     </div>
                     <div class="form-group">
                         <label><i class="fas fa-envelope"></i> Email *</label>
@@ -506,7 +553,9 @@
                 </div>
             </div>
 
-            <div class="modal-decoration"></div>
+            <div class="modal-decoration">                </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -534,11 +583,19 @@
                 <div class="settings-section">
                     <h4><i class="fas fa-user"></i> Основная информация</h4>
                     <div class="form-group">
-                        <label>Ник в Roblox</label>
+                        <label><i class="fas fa-user"></i> Имя пользователя</label>
+                        <input type="text" id="settingsUsername" placeholder="Ваше имя пользователя" minlength="3" maxlength="20">
+                    </div>
+                    <div class="form-group">
+                        <label><img src="icons/icons8-roblox-50.png" alt="Roblox" class="roblox-icon" width="16" height="16" style="display: inline-block; vertical-align: middle; margin-right: 4px;"> Ник в Roblox</label>
                         <input type="text" id="settingsRoblox" placeholder="Ваш ник в игре">
                     </div>
                     <div class="form-group">
-                        <label>Email</label>
+                        <label><i class="fab fa-discord"></i> Discord</label>
+                        <input type="text" id="settingsDiscord" placeholder="Ваш Discord (например: username#0000)">
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-envelope"></i> Email</label>
                         <input type="email" id="settingsEmail" placeholder="Ваш email">
                     </div>
                 </div>
@@ -555,6 +612,16 @@
                     </div>
                 </div>
 
+                <div class="settings-section" style="border-top: 2px solid var(--danger); padding-top: 20px; margin-top: 20px;">
+                    <h4 style="color: var(--danger);"><i class="fas fa-exclamation-triangle"></i> Опасная зона</h4>
+                    <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 16px;">
+                        Удаление аккаунта - необратимое действие. Все ваши данные будут удалены навсегда.
+                    </p>
+                    <button type="button" class="btn btn-danger" onclick="openDeleteAccountModal()">
+                        <i class="fas fa-trash"></i> Удалить аккаунт
+                    </button>
+                </div>
+
                 <div class="form-actions">
                     <button type="button" class="btn btn-glass" onclick="closeSettingsModal()">Отмена</button>
                     <button type="submit" class="btn btn-primary">
@@ -563,6 +630,61 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Delete Account Modal -->
+    <div class="modal-overlay" id="deleteAccountModal">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header" style="border-bottom: 2px solid var(--danger);">
+                <div>
+                    <h2 class="modal-title" style="color: var(--danger);">
+                        <i class="fas fa-exclamation-triangle"></i> Удаление аккаунта
+                    </h2>
+                    <p class="modal-subtitle">Это действие необратимо!</p>
+                </div>
+                <button class="modal-close" onclick="closeDeleteAccountModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div style="padding: 24px;">
+                <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger); border-radius: 12px; padding: 16px; margin-bottom: 24px;">
+                    <h4 style="color: var(--danger); margin-bottom: 12px;">
+                        <i class="fas fa-exclamation-circle"></i> Внимание!
+                    </h4>
+                    <ul style="color: var(--text-secondary); line-height: 1.8; margin-left: 20px;">
+                        <li>Все ваши данные будут удалены навсегда</li>
+                        <li>Все ваши посты и комментарии будут удалены</li>
+                        <li>Все ваши сообщения будут удалены</li>
+                        <li>Это действие невозможно отменить</li>
+                    </ul>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-key"></i> Введите пароль для подтверждения *</label>
+                    <input type="password" id="deleteAccountPassword" placeholder="Введите ваш пароль" class="form-control" autocomplete="current-password">
+                    <small style="color: var(--text-muted); margin-top: 8px; display: block;">
+                        Для подтверждения удаления введите ваш текущий пароль
+                    </small>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="deleteAccountConfirm">
+                        <span>Я понимаю, что это действие необратимо и все мои данные будут удалены</span>
+                    </label>
+                </div>
+
+                <div class="form-actions" style="margin-top: 24px;">
+                    <button type="button" class="btn btn-glass" onclick="closeDeleteAccountModal()">
+                        <i class="fas fa-times"></i> Отмена
+                    </button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDeleteAccount()">
+                        <i class="fas fa-trash"></i> Удалить аккаунт навсегда
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -761,8 +883,8 @@
         <div class="modal modal-lg" onclick="event.stopPropagation()">
             <div class="modal-header">
                 <div>
-                    <h2 class="modal-title">Правила игры</h2>
-                    <p class="modal-subtitle">Unfiltered RP - Пункт 2</p>
+                    <h2 class="modal-title">Правила</h2>
+                    <p class="modal-subtitle">Unfiltered RP - Все пункты</p>
                 </div>
                 <button class="modal-close" onclick="closeRulesModal()">
                     <i class="fas fa-times"></i>
@@ -772,6 +894,70 @@
                 <div class="rules-warning">
                     <i class="fas fa-exclamation-triangle"></i>
                     <p>Незнание правил не освобождает от ответственности! Перед началом игры обязательно прочитайте все правила.</p>
+                </div>
+
+                <div class="rule-section-title">
+                    <h3>Пункт 1. Правила Discord сервера</h3>
+                </div>
+
+                <div class="rule-item">
+                    <div class="rule-number">1.1</div>
+                    <div class="rule-content">
+                        <h4>Запрещены оскорбления кого и чего либо (Есть исключения)</h4>
+                        <p class="rule-punishment"><i class="fas fa-gavel"></i> Наказание: 5м мута - бан</p>
+                    </div>
+                </div>
+
+                <div class="rule-item">
+                    <div class="rule-number">1.2</div>
+                    <div class="rule-content">
+                        <h4>Запрещен оффтоп</h4>
+                        <p class="rule-punishment"><i class="fas fa-gavel"></i> Наказание: 5м мута - 1ч мута</p>
+                    </div>
+                </div>
+
+                <div class="rule-item">
+                    <div class="rule-number">1.3</div>
+                    <div class="rule-content">
+                        <h4>Запрещен спам</h4>
+                        <p class="rule-punishment"><i class="fas fa-gavel"></i> Наказание: 5м мута - бан</p>
+                    </div>
+                </div>
+
+                <div class="rule-item">
+                    <div class="rule-number">1.4</div>
+                    <div class="rule-content">
+                        <h4>Запрещено любое проявление расизма</h4>
+                        <p class="rule-punishment"><i class="fas fa-gavel"></i> Наказание: 15м мута - бан</p>
+                    </div>
+                </div>
+
+                <div class="rule-item">
+                    <div class="rule-number">1.5</div>
+                    <div class="rule-content">
+                        <h4>Запрещена пропаганда чего либо</h4>
+                        <p class="rule-punishment"><i class="fas fa-gavel"></i> Наказание: 30м мута - бан</p>
+                    </div>
+                </div>
+
+                <div class="rule-item">
+                    <div class="rule-number">1.6</div>
+                    <div class="rule-content">
+                        <h4>Запрещено любой упоминание политики</h4>
+                        <p class="rule-punishment"><i class="fas fa-gavel"></i> Наказание: 3ч мута - бан</p>
+                    </div>
+                </div>
+
+                <div class="rule-item">
+                    <div class="rule-number">1.7</div>
+                    <div class="rule-content">
+                        <h4>Запрещен 18+ контент</h4>
+                        <p class="rule-punishment"><i class="fas fa-gavel"></i> Наказание: 3ч мута - бан</p>
+                    </div>
+                </div>
+
+                <div class="rule-section-title" style="margin-top: 32px;">
+                    <h3>Пункт 2. Правила игры</h3>
                 </div>
 
                 <div class="rule-item">
@@ -785,8 +971,7 @@
                 <div class="rule-item">
                     <div class="rule-number">2.2</div>
                     <div class="rule-content">
-                        <h4>Запрещен PG (Powergaming)</h4>
-                        <p class="rule-desc">Навязывание действий другим игрокам, игра за других персонажей</p>
+                        <h4>Запрещен PG</h4>
                         <p class="rule-punishment"><i class="fas fa-gavel"></i> Наказание: 5ч ИРП - 3д ИРП</p>
                     </div>
                 </div>
@@ -794,8 +979,7 @@
                 <div class="rule-item">
                     <div class="rule-number">2.3</div>
                     <div class="rule-content">
-                        <h4>Запрещен MG (Metagaming)</h4>
-                        <p class="rule-desc">Использование OOC информации в RP ситуациях</p>
+                        <h4>Запрещен MG</h4>
                         <p class="rule-punishment"><i class="fas fa-gavel"></i> Наказание: 5ч ИРП - бан</p>
                     </div>
                 </div>
@@ -803,8 +987,7 @@
                 <div class="rule-item">
                     <div class="rule-number">2.4</div>
                     <div class="rule-content">
-                        <h4>Запрещен RK (Revenge Kill)</h4>
-                        <p class="rule-desc">Месть за смерть персонажа</p>
+                        <h4>Запрещен RK</h4>
                         <p class="rule-punishment"><i class="fas fa-gavel"></i> Наказание: 1ч ИРП - 3д ИРП</p>
                     </div>
                 </div>
@@ -820,8 +1003,7 @@
                 <div class="rule-item">
                     <div class="rule-number">2.6</div>
                     <div class="rule-content">
-                        <h4>Запрещен уход от РП</h4>
-                        <p class="rule-desc">Если у вас вылетела игра или по какой-то причине вы вышли во время взаимодействия с игроками, вы обязаны вернуться в игру не менее чем за 5 минут.</p>
+                        <h4>Запрещен уход от РП. Если у вас вылетела игра или еще по какой то причине вы вышли с игры во время какого либо взаимодействия с игроками вы обязаны вернутся в игру не менее чем за 5 минут.</h4>
                         <p class="rule-punishment"><i class="fas fa-gavel"></i> Наказание: 1ч ИРП - 3д ИРП</p>
                     </div>
                 </div>
@@ -829,7 +1011,7 @@
                 <div class="rule-item">
                     <div class="rule-number">2.7</div>
                     <div class="rule-content">
-                        <h4>Запрещено находиться в OOC без весомых причин</h4>
+                        <h4>Запрещено находиться в OOC без весомых на это причин.</h4>
                         <p class="rule-punishment"><i class="fas fa-gavel"></i> Наказание: 1ч ИРП - 3ч ИРП</p>
                     </div>
                 </div>
@@ -837,7 +1019,7 @@
                 <div class="rule-item">
                     <div class="rule-number">2.8</div>
                     <div class="rule-content">
-                        <h4>Запрещены реальные или персонажи из фильмов/сериалов/игр</h4>
+                        <h4>Запрещены реальные или персонажи из фильмов/сериалов/игр.</h4>
                         <p class="rule-punishment"><i class="fas fa-gavel"></i> Наказание: Удаление персонажа</p>
                     </div>
                 </div>
@@ -845,7 +1027,7 @@
                 <div class="rule-item">
                     <div class="rule-number">2.10</div>
                     <div class="rule-content">
-                        <h4>Запрещены суперспособности, магия и фэнтези персонажи</h4>
+                        <h4>Запрещены какие либо суперспособности, магия и фэнтези персонажи.</h4>
                         <p class="rule-punishment"><i class="fas fa-gavel"></i> Наказание: Удаление персонажа</p>
                     </div>
                 </div>
@@ -853,7 +1035,7 @@
                 <div class="rule-item">
                     <div class="rule-number">2.11</div>
                     <div class="rule-content">
-                        <h4>Запрещены НРП скины</h4>
+                        <h4>Запрещены НРП скины.</h4>
                         <p class="rule-punishment"><i class="fas fa-gavel"></i> Наказание: Удаление персонажа</p>
                     </div>
                 </div>
@@ -861,8 +1043,7 @@
                 <div class="rule-item">
                     <div class="rule-number">2.12</div>
                     <div class="rule-content">
-                        <h4>Все отыгровки обязаны быть понятны</h4>
-                        <p class="rule-desc">Написаны на русском языке, запрещены какие-либо сокращения слов</p>
+                        <h4>Все отыгровки обязаны быть понятны и написаны на русском языке, запрещены какие либо сокращения тех или иных слов.</h4>
                         <p class="rule-punishment"><i class="fas fa-gavel"></i> Наказание: Полный откат ситуации</p>
                     </div>
                 </div>
@@ -870,8 +1051,46 @@
                 <div class="rule-item">
                     <div class="rule-number">2.13</div>
                     <div class="rule-content">
-                        <h4>Запрещено использовать РП биндеры и АХК</h4>
-                        <p class="rule-punishment"><i class="fas fa-gavel"></i> Наказание: мут 1 час / бан на 45 минут</p>
+                        <h4>Запрещено использовать какие либо рп биндеры и ахк. Наказание: мут 1 час/бан на 45 минут</h4>
+                    </div>
+                </div>
+
+                <div class="rule-section-title" style="margin-top: 32px;">
+                    <h3>Пункт 3. Правила КРП</h3>
+                </div>
+
+                <div class="rule-item">
+                    <div class="rule-number">3.1</div>
+                    <div class="rule-content">
+                        <h4>Запрещено выстреливать более одной обоймы не отыгрывая перезарядку оружия, что бы иметь более одной обоймы вы обязаны отыграть их покупку.</h4>
+                    </div>
+                </div>
+
+                <div class="rule-item">
+                    <div class="rule-number">3.2</div>
+                    <div class="rule-content">
+                        <h4>Запрещено носить большие оружия такие как Биты, дробовики, автоматы, ружья и т.д. у себя в карманах. (либо в руках, либо в рюкзаке/сумке)</h4>
+                    </div>
+                </div>
+
+                <div class="rule-item">
+                    <div class="rule-number">3.3</div>
+                    <div class="rule-content">
+                        <h4>Замах не обязателен, но стоит учитывать то что удар с замахом будет в разы сильнее.</h4>
+                    </div>
+                </div>
+
+                <div class="rule-item">
+                    <div class="rule-number">3.4</div>
+                    <div class="rule-content">
+                        <h4>Увернуться возможно только если соперник делает удар с замахом или если вы отыграли свою готовность к его удару ранее.</h4>
+                    </div>
+                </div>
+
+                <div class="rule-item">
+                    <div class="rule-number">3.5</div>
+                    <div class="rule-content">
+                        <h4>Вы не обязаны снимать оружие с предохранителя если вы его до этого не ставили.</h4>
                     </div>
                 </div>
             </div>
@@ -1143,6 +1362,647 @@
                     <i class="fas fa-rocket"></i>
                     Начать пользоваться форумом
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel Modal -->
+    <div class="modal-overlay" id="adminPanelModal">
+        <div class="modal modal-xl" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <h2 class="modal-title"><i class="fas fa-shield-alt"></i> Админ-панель</h2>
+                    <p class="modal-subtitle">Управление форумом</p>
+                </div>
+                <button class="modal-close" onclick="closeAdminPanel()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="admin-panel-wrapper">
+                <div class="admin-sidebar">
+                    <div class="admin-menu-category">
+                        <div class="admin-menu-category-title">Обзор</div>
+                        <button class="admin-menu-item active" onclick="switchAdminTab('stats')">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Статистика</span>
+                        </button>
+                    </div>
+                    
+                    <div class="admin-menu-category">
+                        <div class="admin-menu-category-title">Управление</div>
+                        <button class="admin-menu-item" onclick="switchAdminTab('users')">
+                            <i class="fas fa-users"></i>
+                            <span>Пользователи</span>
+                        </button>
+                        <button class="admin-menu-item" onclick="switchAdminTab('staff')">
+                            <i class="fas fa-user-shield"></i>
+                            <span>Персонал</span>
+                        </button>
+                    </div>
+                    
+                    <div class="admin-menu-category">
+                        <div class="admin-menu-category-title">Модерация</div>
+                        <button class="admin-menu-item" onclick="switchAdminTab('posts')">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Посты</span>
+                        </button>
+                        <button class="admin-menu-item" onclick="switchAdminTab('comments')">
+                            <i class="fas fa-comments"></i>
+                            <span>Комментарии</span>
+                        </button>
+                        <button class="admin-menu-item" onclick="switchAdminTab('applications')">
+                            <i class="fas fa-file-signature"></i>
+                            <span>Заявки</span>
+                            <span id="applicationsCount" class="tab-badge hidden">0</span>
+                        </button>
+                        <button class="admin-menu-item" onclick="switchAdminTab('verifications')">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Верификации</span>
+                            <span id="verificationsCount" class="tab-badge hidden">0</span>
+                        </button>
+                    </div>
+                    
+                    <div class="admin-menu-category">
+                        <div class="admin-menu-category-title">Аналитика</div>
+                        <button class="admin-menu-item" onclick="switchAdminTab('activity')">
+                            <i class="fas fa-history"></i>
+                            <span>Логи</span>
+                        </button>
+                        <button class="admin-menu-item" onclick="switchAdminTab('analytics')">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Аналитика</span>
+                        </button>
+                    </div>
+                    
+                    <div class="admin-menu-category">
+                        <div class="admin-menu-category-title">Настройки</div>
+                        <button class="admin-menu-item" onclick="switchAdminTab('templates')">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Шаблоны</span>
+                        </button>
+                        <button class="admin-menu-item" id="adminTabExportBtn" onclick="switchAdminTab('export')" style="display: none;">
+                            <i class="fas fa-download"></i>
+                            <span>Экспорт/Импорт</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="admin-content-area">
+            
+            <!-- Stats Tab -->
+            <div class="admin-tab-content active" id="adminTabStats">
+                <div class="admin-stats-grid" id="adminStatsGrid">
+                    <!-- Stats will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Users Tab -->
+            <div class="admin-tab-content" id="adminTabUsers">
+                <div class="admin-toolbar">
+                    <div class="admin-search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="adminUserSearch" placeholder="Поиск по логину, email, нику..." onkeypress="if(event.key==='Enter') loadAdminUsers()">
+                    </div>
+                    <select id="adminRoleFilter" onchange="loadAdminUsers()">
+                        <option value="all">Все роли</option>
+                        <option value="user">Пользователи</option>
+                        <option value="helper">Хелперы</option>
+                        <option value="moderator">Модераторы</option>
+                        <option value="admin">Админы</option>
+                        <option value="senior_admin">Старшие администраторы</option>
+                        <option value="manager">Менеджеры проекта</option>
+                        <option value="management">Руководство</option>
+                    </select>
+                    <button class="btn btn-primary btn-sm" onclick="loadAdminUsers()">
+                        <i class="fas fa-sync"></i>
+                    </button>
+                </div>
+                
+                <div class="admin-users-list" id="adminUsersList">
+                    <!-- Users will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Staff Tab -->
+            <div class="admin-tab-content" id="adminTabStaff">
+                <div class="staff-management">
+                    <div class="staff-add-section">
+                        <h4><i class="fas fa-user-plus"></i> Назначить роль</h4>
+                        <div class="staff-add-form">
+                            <div class="form-group">
+                                <label><i class="fas fa-user"></i> Логин пользователя</label>
+                                <input type="text" id="staffUsername" placeholder="Введите логин...">
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fas fa-shield-alt"></i> Роль</label>
+                                <select id="staffRole">
+                                    <option value="">Выберите роль...</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" onclick="assignStaffRole()">
+                                <i class="fas fa-check"></i> Назначить
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="staff-list-section">
+                        <h4><i class="fas fa-users-cog"></i> Текущий персонал</h4>
+                        <div class="staff-categories">
+                            <div class="staff-category">
+                                <div class="staff-category-header management">
+                                    <i class="fas fa-star"></i> Руководство
+                                </div>
+                                <div class="staff-list" id="staffManagement"></div>
+                            </div>
+                            <div class="staff-category">
+                                <div class="staff-category-header manager">
+                                    <i class="fas fa-briefcase"></i> Менеджеры проекта
+                                </div>
+                                <div class="staff-list" id="staffManagers"></div>
+                            </div>
+                            <div class="staff-category">
+                                <div class="staff-category-header senior-admin">
+                                    <i class="fas fa-crown"></i> Старшие администраторы
+                                </div>
+                                <div class="staff-list" id="staffSeniorAdmins"></div>
+                            </div>
+                            <div class="staff-category">
+                                <div class="staff-category-header admin">
+                                    <i class="fas fa-crown"></i> Администраторы
+                                </div>
+                                <div class="staff-list" id="staffAdmins"></div>
+                            </div>
+                            <div class="staff-category">
+                                <div class="staff-category-header moderator">
+                                    <i class="fas fa-shield-alt"></i> Модераторы
+                                </div>
+                                <div class="staff-list" id="staffModerators"></div>
+                            </div>
+                            <div class="staff-category">
+                                <div class="staff-category-header helper">
+                                    <i class="fas fa-hands-helping"></i> Хелперы
+                                </div>
+                                <div class="staff-list" id="staffHelpers"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Applications Tab -->
+            <div class="admin-tab-content" id="adminTabApplications">
+                <div class="admin-toolbar">
+                    <select id="adminAppStatus" onchange="loadAdminApplications()">
+                        <option value="pending">Ожидают рассмотрения</option>
+                        <option value="approved">Одобренные</option>
+                        <option value="rejected">Отклонённые</option>
+                        <option value="all">Все заявки</option>
+                    </select>
+                    <button class="btn btn-primary btn-sm" onclick="loadAdminApplications()">
+                        <i class="fas fa-sync"></i>
+                    </button>
+                </div>
+                
+                <div class="admin-applications-list" id="adminApplicationsList">
+                    <!-- Applications will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Verifications Tab -->
+            <div class="admin-tab-content" id="adminTabVerifications">
+                <div class="admin-toolbar">
+                    <select id="adminVerStatus" onchange="loadAdminVerifications()">
+                        <option value="pending">Ожидают рассмотрения</option>
+                        <option value="approved">Одобренные</option>
+                        <option value="rejected">Отклонённые</option>
+                        <option value="all">Все верификации</option>
+                    </select>
+                    <button class="btn btn-primary btn-sm" onclick="loadAdminVerifications()">
+                        <i class="fas fa-sync"></i>
+                    </button>
+                </div>
+                
+                <div class="admin-applications-list" id="adminVerificationsList">
+                    <!-- Verifications will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Posts Tab -->
+            <div class="admin-tab-content" id="adminTabPosts">
+                <div class="admin-toolbar">
+                    <select id="adminPostStatus" onchange="loadAdminPosts()">
+                        <option value="all">Все статусы</option>
+                        <option value="open">Открытые</option>
+                        <option value="approved">Принятые</option>
+                        <option value="rejected">Отклонённые</option>
+                        <option value="resolved">Решённые</option>
+                    </select>
+                    <select id="adminPostCategory" onchange="loadAdminPosts()">
+                        <option value="all">Все категории</option>
+                        <option value="complaints">Жалобы</option>
+                        <option value="appeals">Апелляции</option>
+                        <option value="questions">Вопросы</option>
+                        <option value="suggestions">Предложения</option>
+                    </select>
+                    <button class="btn btn-primary btn-sm" onclick="loadAdminPosts()">
+                        <i class="fas fa-sync"></i>
+                    </button>
+                </div>
+                
+                <div class="admin-posts-list" id="adminPostsList">
+                    <!-- Posts will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Activity Tab -->
+            <div class="admin-tab-content" id="adminTabActivity">
+                <div class="admin-toolbar">
+                    <div class="admin-search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="activitySearch" placeholder="Поиск по действию, пользователю..." onkeypress="if(event.key==='Enter') loadAdminActivity()">
+                    </div>
+                    <select id="activityActionFilter" onchange="loadAdminActivity()">
+                        <option value="all">Все действия</option>
+                        <option value="register">Регистрация</option>
+                        <option value="login">Вход</option>
+                        <option value="post_create">Создание поста</option>
+                        <option value="post_delete">Удаление поста</option>
+                        <option value="ban_user">Бан пользователя</option>
+                        <option value="role_change">Изменение роли</option>
+                    </select>
+                    <input type="date" id="activityDateFrom" onchange="loadAdminActivity()" title="Дата от">
+                    <input type="date" id="activityDateTo" onchange="loadAdminActivity()" title="Дата до">
+                    <button class="btn btn-primary btn-sm" onclick="loadAdminActivity()">
+                        <i class="fas fa-sync"></i>
+                    </button>
+                    <button class="btn btn-glass btn-sm" onclick="exportActivityLog()">
+                        <i class="fas fa-download"></i> Экспорт
+                    </button>
+                </div>
+                <div class="admin-activity-list" id="adminActivityList">
+                    <!-- Activity will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Comments Tab -->
+            <div class="admin-tab-content" id="adminTabComments">
+                <div class="admin-toolbar">
+                    <div class="admin-search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="commentSearch" placeholder="Поиск по тексту, автору..." onkeypress="if(event.key==='Enter') loadAdminComments()">
+                    </div>
+                    <select id="commentPostFilter" onchange="loadAdminComments()">
+                        <option value="all">Все посты</option>
+                    </select>
+                    <input type="date" id="commentDateFrom" onchange="loadAdminComments()" title="Дата от">
+                    <input type="date" id="commentDateTo" onchange="loadAdminComments()" title="Дата до">
+                    <button class="btn btn-primary btn-sm" onclick="loadAdminComments()">
+                        <i class="fas fa-sync"></i>
+                    </button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteSelectedComments()" id="deleteCommentsBtn" style="display:none;">
+                        <i class="fas fa-trash"></i> Удалить выбранные (<span id="selectedCommentsCount">0</span>)
+                    </button>
+                </div>
+                <div class="admin-comments-list" id="adminCommentsList">
+                    <!-- Comments will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Analytics Tab -->
+            <div class="admin-tab-content" id="adminTabAnalytics">
+                <div class="admin-toolbar">
+                    <select id="analyticsPeriod" onchange="loadAnalytics()">
+                        <option value="7">Последние 7 дней</option>
+                        <option value="30" selected>Последние 30 дней</option>
+                        <option value="90">Последние 90 дней</option>
+                        <option value="365">Последний год</option>
+                    </select>
+                    <button class="btn btn-primary btn-sm" onclick="loadAnalytics()">
+                        <i class="fas fa-sync"></i> Обновить
+                    </button>
+                    <button class="btn btn-glass btn-sm" onclick="exportAnalytics()">
+                        <i class="fas fa-download"></i> Экспорт отчета
+                    </button>
+                </div>
+                <div class="analytics-content" id="analyticsContent">
+                    <!-- Analytics will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Templates Tab -->
+            <div class="admin-tab-content" id="adminTabTemplates">
+                <div class="templates-header">
+                    <h3><i class="fas fa-file-alt"></i> Шаблоны ответов</h3>
+                    <button class="btn btn-primary" onclick="openTemplateModal()">
+                        <i class="fas fa-plus"></i> Создать шаблон
+                    </button>
+                </div>
+                <div class="templates-list" id="templatesList">
+                    <!-- Templates will be loaded here -->
+                </div>
+            </div>
+            
+            <!-- Export/Import Tab -->
+            <div class="admin-tab-content" id="adminTabExport">
+                <div class="export-import-section">
+                    <div class="export-section">
+                        <h3><i class="fas fa-download"></i> Экспорт данных</h3>
+                        <p>Выберите данные для экспорта:</p>
+                        <div class="export-options">
+                            <label><input type="checkbox" id="exportUsers" checked> Пользователи</label>
+                            <label><input type="checkbox" id="exportPosts" checked> Посты</label>
+                            <label><input type="checkbox" id="exportComments" checked> Комментарии</label>
+                            <label><input type="checkbox" id="exportMessages" checked> Сообщения</label>
+                            <label><input type="checkbox" id="exportApplications" checked> Заявки</label>
+                            <label><input type="checkbox" id="exportActivity" checked> Логи активности</label>
+                        </div>
+                        <div class="export-format">
+                            <label>Формат:</label>
+                            <select id="exportFormat">
+                                <option value="json">JSON</option>
+                                <option value="csv">CSV</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary" onclick="exportData()">
+                            <i class="fas fa-download"></i> Экспортировать
+                        </button>
+                    </div>
+                    
+                    <div class="import-section">
+                        <h3><i class="fas fa-upload"></i> Импорт данных</h3>
+                        <p>Восстановить данные из резервной копии:</p>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="importFile" accept=".json" onchange="handleImportFile(this)">
+                            <button class="btn btn-primary" onclick="document.getElementById('importFile').click()">
+                                <i class="fas fa-upload"></i> Выбрать файл
+                            </button>
+                            <span id="importFileName" class="file-name">Файл не выбран</span>
+                        </div>
+                        <button class="btn btn-danger" onclick="createBackup()">
+                            <i class="fas fa-save"></i> Создать резервную копию
+                        </button>
+                    </div>
+                    
+                    <div class="backup-section">
+                        <h3><i class="fas fa-database"></i> Управление базой данных</h3>
+                        <button class="btn btn-glass" onclick="optimizeDatabase()">
+                            <i class="fas fa-compress"></i> Оптимизировать БД
+                        </button>
+                        <button class="btn btn-glass" onclick="clearOldData()">
+                            <i class="fas fa-broom"></i> Очистить старые данные
+                        </button>
+                        <button class="btn btn-danger" onclick="checkDatabaseIntegrity()">
+                            <i class="fas fa-check-circle"></i> Проверить целостность
+                        </button>
+                    </div>
+                </div>
+            </div>
+                </div>
+            </div>
+            
+            <!-- User Edit Modal -->
+            <div class="admin-user-modal hidden" id="adminUserModal">
+                <div class="admin-user-card" id="adminUserCard">
+                    <!-- User info will be rendered here -->
+                </div>
+            </div>
+            
+            <!-- Ban Reason Modal -->
+            <div class="admin-input-modal hidden" id="banReasonModal">
+                <div class="admin-input-card">
+                    <h3><i class="fas fa-ban"></i> Забанить пользователя</h3>
+                    <p class="modal-subtitle" id="banUserName">Пользователь</p>
+                    <div class="form-group">
+                        <label><i class="fas fa-comment"></i> Причина бана</label>
+                        <textarea id="banReasonInput" rows="3" placeholder="Укажите причину бана..."></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-glass" onclick="closeBanModal()">Отмена</button>
+                        <button class="btn btn-danger" onclick="confirmBan()">
+                            <i class="fas fa-ban"></i> Забанить
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mute Reason Modal -->
+            <div class="admin-input-modal hidden" id="muteReasonModal">
+                <div class="admin-input-card">
+                    <h3><i class="fas fa-volume-mute"></i> Замутить пользователя</h3>
+                    <p class="modal-subtitle" id="muteUserName">Пользователь</p>
+                    <div class="form-group">
+                        <label><i class="fas fa-comment"></i> Причина мута</label>
+                        <textarea id="muteReasonInput" rows="3" placeholder="Укажите причину мута..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label><i class="fas fa-clock"></i> Длительность (минуты, необязательно)</label>
+                        <input type="number" id="muteDurationInput" min="1" placeholder="Оставьте пустым для постоянного мута">
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-glass" onclick="closeMuteModal()">Отмена</button>
+                        <button class="btn btn-warning" onclick="confirmMute()">
+                            <i class="fas fa-volume-mute"></i> Замутить
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reject Reason Modal -->
+            <div class="admin-input-modal hidden" id="rejectReasonModal">
+                <div class="admin-input-card">
+                    <h3><i class="fas fa-times-circle"></i> Отклонить заявку</h3>
+                    <div class="form-group">
+                        <label><i class="fas fa-comment"></i> Причина отклонения (необязательно)</label>
+                        <textarea id="rejectReasonInput" rows="3" placeholder="Укажите причину..."></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-glass" onclick="closeRejectModal()">Отмена</button>
+                        <button class="btn btn-danger" onclick="confirmReject()">
+                            <i class="fas fa-times"></i> Отклонить
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reject Post Reason Modal -->
+            <div class="admin-input-modal hidden" id="rejectPostReasonModal">
+                <div class="admin-input-card">
+                    <h3><i class="fas fa-times-circle"></i> Отклонить тему</h3>
+                    <div class="form-group">
+                        <label><i class="fas fa-comment"></i> Причина отклонения (необязательно)</label>
+                        <textarea id="rejectPostReasonInput" rows="3" placeholder="Укажите причину..."></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-glass" onclick="closeRejectPostModal()">Отмена</button>
+                        <button class="btn btn-danger" onclick="confirmRejectPost()">
+                            <i class="fas fa-times"></i> Отклонить
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Universal Confirm Modal -->
+            <div class="admin-input-modal hidden" id="confirmModal">
+                <div class="admin-input-card">
+                    <h3 id="confirmModalTitle"><i class="fas fa-question-circle"></i> Подтвердите действие</h3>
+                    <div class="form-group">
+                        <p id="confirmModalMessage" style="color: var(--text-secondary); margin: 0;"></p>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-glass" onclick="closeConfirmModal()">Отмена</button>
+                        <button class="btn btn-primary" id="confirmModalOkBtn" onclick="executeConfirmAction()">
+                            OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Universal Prompt Modal -->
+            <div class="admin-input-modal hidden" id="promptModal">
+                <div class="admin-input-card">
+                    <h3 id="promptModalTitle"><i class="fas fa-edit"></i> Введите данные</h3>
+                    <div class="form-group">
+                        <label id="promptModalLabel"></label>
+                        <textarea id="promptModalInput" rows="3" placeholder="Введите текст..."></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-glass" onclick="closePromptModal()">Отмена</button>
+                        <button class="btn btn-primary" id="promptModalOkBtn" onclick="executePromptAction()">
+                            OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Verification Modal -->
+    <div class="modal-overlay" id="emailVerifyModal">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <h2 class="modal-title"><i class="fas fa-envelope"></i> Подтверждение email</h2>
+                    <p class="modal-subtitle">Подтвердите вашу почту</p>
+                </div>
+                <button class="modal-close" onclick="closeEmailVerifyModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="verification-content">
+                <div class="email-verify-info" id="emailVerifyInfo">
+                    <p>Ваш email: <strong id="emailVerifyAddress">загрузка...</strong></p>
+                    <div class="verify-code-display" id="emailCodeDisplaySection">
+                        <p>Ваш код подтверждения:</p>
+                        <div class="verify-code-box large">
+                            <code id="emailDisplayCode">------</code>
+                        </div>
+                        <p style="color: var(--text-muted); font-size: 12px; margin-top: 8px;">Введите этот код ниже для подтверждения</p>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-top: 20px;">
+                    <label><i class="fas fa-keyboard"></i> Введите код для подтверждения:</label>
+                    <input type="text" id="emailVerifyCode" class="verify-code-input" placeholder="000000" maxlength="6">
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn btn-glass" onclick="refreshEmailCode()">
+                        <i class="fas fa-redo"></i> Новый код
+                    </button>
+                    <button class="btn btn-primary" onclick="verifyEmail()">
+                        <i class="fas fa-check"></i> Подтвердить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Roblox Verification Modal -->
+    <div class="modal-overlay" id="robloxVerifyModal">
+        <div class="modal modal-lg" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <h2 class="modal-title"><img src="icons/icons8-roblox-50.png" alt="Roblox" class="roblox-icon" width="20" height="20" style="display: inline-block; vertical-align: middle; margin-right: 8px;"> Верификация Roblox</h2>
+                    <p class="modal-subtitle">Подтвердите, что вы владеете аккаунтом <span id="robloxNickDisplay"></span></p>
+                </div>
+                <button class="modal-close" onclick="closeRobloxVerifyModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="verification-content" style="text-align: left;">
+                <div class="roblox-info-box">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>Верификация через User ID</strong>
+                        <p>Введите ваш User ID из Roblox для верификации аккаунта. User ID можно найти в URL вашего профиля на сайте roblox.com</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 24px;">
+                    <div class="form-group">
+                        <label><i class="fas fa-user"></i> User ID Roblox *</label>
+                        <input type="text" id="robloxUserIdInput" class="form-control" placeholder="Например: 123456789" maxlength="20" pattern="[0-9]+">
+                        <small style="color: var(--text-muted); margin-top: 8px; display: block;">
+                            <i class="fas fa-question-circle"></i> Как найти User ID? Откройте свой профиль на roblox.com и посмотрите на URL: <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">roblox.com/users/123456789/profile</code> - число после "users/" и есть ваш User ID
+                        </small>
+                    </div>
+                    
+                    <div class="form-actions" style="margin-top: 24px;">
+                        <button class="btn btn-glass" onclick="closeRobloxVerifyModal()">
+                            <i class="fas fa-times"></i> Отмена
+                        </button>
+                        <button class="btn btn-primary btn-lg" onclick="verifyRobloxByUserId()">
+                            <i class="fas fa-check-circle"></i> Подтвердить
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Account Switcher Modal -->
+    <div class="modal-overlay" id="accountSwitcherModal">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div>
+                    <h2 class="modal-title"><i class="fas fa-exchange-alt"></i> Смена аккаунта</h2>
+                    <p class="modal-subtitle">Переключение между аккаунтами</p>
+                </div>
+                <button class="modal-close" onclick="closeAccountSwitcher()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="account-switcher-content">
+                <div class="current-account-section">
+                    <h4><i class="fas fa-user-circle"></i> Текущий аккаунт</h4>
+                    <div class="current-account-card" id="currentAccountCard">
+                        <!-- Текущий аккаунт будет здесь -->
+                    </div>
+                </div>
+
+                <div class="saved-accounts-section">
+                    <div class="section-header">
+                        <h4><i class="fas fa-users"></i> Сохраненные аккаунты</h4>
+                        <span class="accounts-count" id="accountsCount">0</span>
+                    </div>
+                    
+                    <div class="accounts-list" id="accountsList">
+                        <!-- Список аккаунтов будет здесь -->
+                    </div>
+                </div>
+                
+                <div class="account-switcher-actions">
+                    <button class="btn btn-primary" onclick="openAuthModal('login'); closeAccountSwitcher();">
+                        <i class="fas fa-sign-in-alt"></i> Войти в другой аккаунт
+                    </button>
+                    <button class="btn btn-glass" onclick="closeAccountSwitcher()">
+                        <i class="fas fa-times"></i> Отмена
+                    </button>
+                </div>
             </div>
         </div>
     </div>
